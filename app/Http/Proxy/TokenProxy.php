@@ -32,7 +32,7 @@ class TokenProxy
      */
     public function login($name, $password)
     {
-        if (auth()->attempt(['email' => $name, 'password' => $password, 'is_active' => 0])) {
+        if (auth()->attempt(['email' => $name, 'password' => $password, 'is_active' => 1])) {
             return $this->proxy('password', [
                 'username' => $name,
                 'password' => $password,
@@ -61,7 +61,7 @@ class TokenProxy
             'grant_type' => $grantType
         ]);
 
-        $response = $this->http->post('http://localhost/oauth/token', [
+        $response = $this->http->post(env('MY_API_HTTP_HEAD'). 'oauth/token', [
             'form_params' => $data
         ]);
 
