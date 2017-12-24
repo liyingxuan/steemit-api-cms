@@ -24,7 +24,12 @@ $ npm install
 
 $ cp .env.example .env
 $ php artisna key:generate 
+# 将生成的key保存到.env中
+
+$ php artisan passport:install
+# 将生成的两个CLIENT_Secret保存到.env中
 ```
+
 After the database can be connected properly, import the database structure and data.  
 确保数据库能连接正常之后，导入数据库结构和数据：
 

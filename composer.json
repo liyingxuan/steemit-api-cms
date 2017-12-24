@@ -1,6 +1,8 @@
 {
-  "name": "laravel/laravel",
-  "description": "The Laravel Framework.",
+  "name": "steemit-api-cms",
+  "description": "steemit",
+  "author": "liyingxuan <mvp_xuan@163.com>",
+  "private": true,
   "keywords": [
     "framework",
     "laravel"
