@@ -1,4 +1,8 @@
 {
+    "name": "steemit-api-cms",
+    "version": "1.0.0",
+    "description": "steemit",
+    "author": "liyingxuan <mvp_xuan@163.com>",
     "private": true,
     "scripts": {
         "dev": "npm run development",
