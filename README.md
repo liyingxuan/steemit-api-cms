@@ -3,6 +3,8 @@
 > 高仿Steemit，使用Laravel + Vue重写。  
 这是CMS和API部分。
 
+配套的前端代码：  
+[steemit-vuejs2](https://github.com/liyingxuan/steemit-vuejs2)  
 
 #### 1. Language and framework
 PHP >=7.0.0  
