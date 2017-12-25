@@ -28,8 +28,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::routes();
 
-        Passport::tokensExpireIn(now()->addDays(15)); // 15天过期，然后去refresh token
+        Passport::tokensExpireIn(now()->addDays(1)); // 1天过期，然后去refresh token
 
-        Passport::refreshTokensExpireIn(now()->addDays(30)); // 30天后过期，需要重新登录
+        Passport::refreshTokensExpireIn(now()->addDays(30)); // 30天后过期，需要重新登录；和./app/Http/Proxy/TokenProxy.php中的cookie分钟对应
     }
 }

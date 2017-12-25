@@ -67,9 +67,10 @@ class TokenProxy
 
         $token = json_decode((string)$response->getBody(), true);
 
+        // 注意这里的cookie的生命期单位是分钟，43200代表30天；对应了：./app/Providers/AuthServiceProvider.php中的时间
         return response()->json([
             'token' => $token['access_token'],
             'expires_in' => $token['expires_in']
-        ])->cookie('refreshToken', $token['refresh_token'], 2592000, null, null, false, true);
+        ])->cookie('refreshToken', $token['refresh_token'], 43200, null, null, false, true);
     }
 }
