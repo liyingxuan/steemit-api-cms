@@ -15,8 +15,6 @@
  */
 Route::get('/doc', '\App\Api\Controllers\ApiDoc@index');
 
-
-
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
     $api->group(['namespace' => 'App\Api\Controllers', 'middleware' => ['jwt.api.auth']], function ($api) {
@@ -25,5 +23,15 @@ $api->version('v1', function ($api) {
 
         $api->post('register', 'AuthController@register');
         $api->post('login', 'LoginController@login');
+    });
+
+    /**
+     * Token Auth
+     */
+    $api->group(['namespace' => 'App\Api\Controllers', 'middleware' => 'auth:api'], function ($api) {
+        // User
+        $api->group(['prefix' => 'user'], function ($api) {
+            $api->get('profile', 'UserController@getAuthenticatedUser');
+        });
     });
 });

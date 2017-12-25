@@ -36,8 +36,28 @@ After the database can be connected properly, import the database structure and 
 ./database/sql/steemit.sql  
 
 
-#### 3. 注意事项
+#### 3. 注意事项  
+###### 有随机无法使用token proxy的问题  
 > ./steemit-api-cms/app/Http/Proxy/TokenProxy.php 中需要配置了env中的：  
 MY_API_HTTP_HEAD=http://steemit.dev/
 才能正确使用，而且有可能不能为localhost。  
-随机有bug，可以本地建一个虚拟主机，例如：steemit.dev。
+随机有bug，可以本地建一个虚拟主机，例如：steemit.dev。  
+
+
+###### 前端获取的token无法验证; Bearer token无法验证  
+> 
+```$xslt
+/**
+ * 设置JWT用户认证所需的http Authorization头信息：
+ */
+axios.interceptors.request.use(function (config) {
+  if(jwtToken.getToken()) {
+    // Bearer后需要一个空格！！！
+    config.headers['Authorization'] = 'Bearer' + ' ' + jwtToken.getToken()
+  }
+  return config
+}, function (error) {
+  return Promise.reject(error)
+})
+
+```

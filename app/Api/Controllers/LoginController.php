@@ -32,6 +32,7 @@ class LoginController extends Controller
 
     /**
      * LoginController constructor.
+     *
      * @param TokenProxy $proxy
      */
     public function __construct(TokenProxy $proxy)
@@ -41,7 +42,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return $this
+     * User login return token.
      */
     public function login()
     {
