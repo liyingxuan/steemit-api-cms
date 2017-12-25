@@ -23,6 +23,7 @@ $api->version('v1', function ($api) {
 
         $api->post('register', 'AuthController@register');
         $api->post('login', 'LoginController@login');
+        $api->post('logout', 'LoginController@logout');
     });
 
     /**

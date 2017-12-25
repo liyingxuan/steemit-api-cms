@@ -47,6 +47,33 @@ class TokenProxy
     }
 
     /**
+     * User logout.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        // 获取登录用户信息
+        $user = auth()->guard('api')->user();
+        $accessToken = $user->token();
+
+        // 注销access_token和refresh token
+        app('db')->table('oauth_refresh_tokens')
+            ->where('access_token_id', $accessToken->id)
+            ->update([
+                'revoked' => true
+            ]);
+
+        // 删除cookie
+        app('cookie')->forget('refreshToken');
+
+        // 取消验证
+        $accessToken->revoke();
+
+        return response()->json(['message' => 'Logout!'], 204);
+    }
+
+    /**
      * 使用代理来加载敏感信息。
      *
      * @param $grantType
