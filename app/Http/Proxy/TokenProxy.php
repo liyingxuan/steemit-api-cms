@@ -69,6 +69,11 @@ class TokenProxy
     {
         // 获取登录用户信息
         $user = auth()->guard('api')->user();
+        if (is_null($user)) {
+            // 异步删除cookie
+            app('cookie')->queue(app('cookie')->forget('refreshToken'));
+            return response()->json(['message' => 'Logout!'], 204);
+        }
         $accessToken = $user->token();
 
         // 注销access_token和refresh token
@@ -78,8 +83,8 @@ class TokenProxy
                 'revoked' => true
             ]);
 
-        // 删除cookie
-        app('cookie')->forget('refreshToken');
+        // 异步删除cookie
+        app('cookie')->queue(app('cookie')->forget('refreshToken'));
 
         // 取消验证
         $accessToken->revoke();
