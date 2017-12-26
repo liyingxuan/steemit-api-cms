@@ -47,6 +47,20 @@ class TokenProxy
     }
 
     /**
+     * Refresh token.
+     *
+     * @return TokenProxy
+     */
+    public function refresh()
+    {
+        $refreshToken = request()->cookie('refreshToken');
+
+        return $this->proxy('refresh_token', [
+            'refresh_token' => $refreshToken
+        ]);
+    }
+
+    /**
      * User logout.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -88,7 +102,7 @@ class TokenProxy
             'grant_type' => $grantType
         ]);
 
-        $response = $this->http->post(env('MY_API_HTTP_HEAD'). 'oauth/token', [
+        $response = $this->http->post(env('MY_API_HTTP_HEAD') . 'oauth/token', [
             'form_params' => $data
         ]);
 
@@ -97,6 +111,7 @@ class TokenProxy
         // 注意这里的cookie的生命期单位是分钟，43200代表30天；对应了：./app/Providers/AuthServiceProvider.php中的时间
         return response()->json([
             'token' => $token['access_token'],
+            'auth_id' => md5($token['refresh_token']), // 加密refresh token值传到前端，优化SPA刷新token体验，需要前端js-cookie库配合
             'expires_in' => $token['expires_in']
         ])->cookie('refreshToken', $token['refresh_token'], 43200, null, null, false, true);
     }

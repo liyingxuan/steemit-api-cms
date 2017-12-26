@@ -56,4 +56,12 @@ class LoginController extends Controller
     {
         return $this->proxy->logout();
     }
+
+    /**
+     * Refresh token.
+     */
+    public function refresh()
+    {
+        return $this->proxy->refresh();
+    }
 }
