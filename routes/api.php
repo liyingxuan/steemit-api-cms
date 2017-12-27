@@ -17,7 +17,7 @@ Route::get('/doc', '\App\Api\Common\ApiDoc@index');
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
-    $api->group(['namespace' => 'App\Api\Controllers', 'middleware' => ['jwt.api.auth']], function ($api) {
+    $api->group(['namespace' => 'App\Api\Controllers'], function ($api) {
         $api->get('intelligence', 'IntelligenceController@index');
         $api->get('help-doc', 'HelpDocController@index');
 
@@ -39,6 +39,7 @@ $api->version('v1', function ($api) {
         // Post
         $api->group(['prefix' => 'post'], function ($api) {
             $api->post('create', 'PostController@create');
+            $api->get('my-blog', 'PostController@myBlog');
         });
     });
 });
