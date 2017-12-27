@@ -13,7 +13,7 @@
 /**
  * Api Doc
  */
-Route::get('/doc', '\App\Api\Controllers\ApiDoc@index');
+Route::get('/doc', '\App\Api\Common\ApiDoc@index');
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
@@ -34,6 +34,11 @@ $api->version('v1', function ($api) {
         // User
         $api->group(['prefix' => 'user'], function ($api) {
             $api->get('profile', 'UserController@getAuthenticatedUser');
+        });
+
+        // Post
+        $api->group(['prefix' => 'post'], function ($api) {
+            $api->post('create', 'PostController@create');
         });
     });
 });

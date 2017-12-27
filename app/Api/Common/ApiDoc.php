@@ -6,7 +6,9 @@
  * Time: 下午3:09
  */
 
-namespace App\Api\Controllers;
+namespace App\Api\Common;
+
+use App\Api\Controllers\BaseController;
 
 /**
  * Class HospitalsController
