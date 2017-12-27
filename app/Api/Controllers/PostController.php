@@ -56,4 +56,58 @@ class PostController extends Controller
 
         return RetJson::format($articles);
     }
+
+    /**
+     * 获取常规blog列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function blogList(Request $request)
+    {
+        $user = $request->user();
+        if (is_null($user)) {
+            $articles = Article::getBlogList();
+        } else {
+            $articles = Article::getBlogList($user->id);
+        }
+
+        return RetJson::format($articles);
+    }
+
+    /**
+     * 获取最新的blog列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function newBlogList(Request $request)
+    {
+        $user = $request->user();
+        if (is_null($user)) {
+            $articles = Article::getNewBlogList();
+        } else {
+            $articles = Article::getNewBlogList($user->id);
+        }
+
+        return RetJson::format($articles);
+    }
+
+    /**
+     * 获取最热门的blog列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function hotBlogList(Request $request)
+    {
+        $user = $request->user();
+        if (is_null($user)) {
+            $articles = Article::getHotBlogList();
+        } else {
+            $articles = Article::getHotBlogList($user->id);
+        }
+
+        return RetJson::format($articles);
+    }
 }

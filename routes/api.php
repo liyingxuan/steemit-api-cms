@@ -25,6 +25,10 @@ $api->version('v1', function ($api) {
         $api->post('login', 'LoginController@login');
         $api->post('token/refresh', 'LoginController@refresh');
         $api->post('logout', 'LoginController@logout');
+
+        $api->get('blogs', 'PostController@blogList');
+        $api->get('new-blog', 'PostController@newBlogList');
+        $api->get('hot-blog', 'PostController@hotBlogList');
     });
 
     /**
@@ -40,6 +44,10 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'post'], function ($api) {
             $api->post('create', 'PostController@create');
             $api->get('my-blog', 'PostController@myBlog');
+
+            $api->get('blogs', 'PostController@blogList');
+            $api->get('new-blog', 'PostController@newBlogList');
+            $api->get('hot-blog', 'PostController@hotBlogList');
         });
     });
 });

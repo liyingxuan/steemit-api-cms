@@ -38,4 +38,61 @@ class Article extends Model
             ->orderBy('articles.id', 'desc')
             ->paginate(10);
     }
+
+    /**
+     * 获取标准blog列表
+     *
+     * @param null $userId
+     * @return mixed
+     */
+    public static function getBlogList($userId = null)
+    {
+        return Article::select(DB::raw(
+            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
+            'count(article_comments.id) AS commentCount'))
+            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
+            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
+            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
+            ->groupBy('articles.id')
+            ->orderBy('articles.id', 'desc')
+            ->paginate(10);
+    }
+
+    /**
+     * 获取最新的blog列表
+     *
+     * @param null $userId
+     * @return mixed
+     */
+    public static function getNewBlogList($userId = null)
+    {
+        return Article::select(DB::raw(
+            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
+            'count(article_comments.id) AS commentCount'))
+            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
+            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
+            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
+            ->groupBy('articles.id')
+            ->orderBy('articles.id', 'desc')
+            ->paginate(10);
+    }
+
+    /**
+     * 获取最热的blog列表
+     *
+     * @param null $userId
+     * @return mixed
+     */
+    public static function getHotBlogList($userId = null)
+    {
+        return Article::select(DB::raw(
+            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
+            'count(article_comments.id) AS commentCount'))
+            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
+            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
+            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
+            ->groupBy('articles.id')
+            ->orderBy('articles.id', 'asc')
+            ->paginate(10);
+    }
 }

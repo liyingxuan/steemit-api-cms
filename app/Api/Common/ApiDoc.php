@@ -54,7 +54,7 @@ class ApiDoc extends BaseController
 
             '帮忙文档' => $this->helpDoc($url),
 
-            '我的blog列表' => $this->myBlog($url)
+            '获取各种Blog列表' => $this->blogList($url)
         ];
 
         return response()->json(compact('api'));
@@ -119,17 +119,23 @@ class ApiDoc extends BaseController
     }
 
     /**
-     * 我的blog列表
+     * 获取各种blog列表
      *
      * @param $url
      * @return array
      */
-    public function myBlog($url)
+    public function blogList($url)
     {
         return [
             '帮助文档' => [
                 '说明' => '获取登录用户的blog列表',
-                'url' => $url . '/post/my-blog',
+                '获取我的Blog列表url' => $url . '/post/my-blog',
+                '获取默认的Blog列表url' => $url . '/post/my-blog',
+                '获取最新的Blog列表url' => $url . '/post/my-blog',
+                '获取最热的Blog列表url' => $url . '/post/my-blog',
+                '获取默认的Blog列表url-未登录' => $url . '/my-blog',
+                '获取最新的Blog列表url-未登录' => $url . '/my-blog',
+                '获取最热的Blog列表url-未登录' => $url . '/my-blog',
                 'method' => 'GET',
                 'params' => [],
                 'response' => [
@@ -137,7 +143,21 @@ class ApiDoc extends BaseController
                     'info' => '',
                     'data' => [
                         'current_page' => '页数',
-                        'data' => '实际数据list',
+                        'data' => [
+                            'id' => 'post id',
+                            'author' => '作者',
+                            'author_id' => '作者id',
+                            'title' => '标题',
+                            'content' => '内容',
+                            'content_html' => '内容html化',
+                            'first_img_url' => '第一张图片url',
+                            'tag' => 'tag list',
+                            'starCount' => '赞的数量',
+                            'commentCount' => '评论的数量',
+                            'txid' => '交易hash',
+                            'created_at' => '最初创建时间',
+                            'updated_at' => '最后更新时间'
+                        ],
                         'first_page_url' => '第一页信息',
                         'last_page_url' => '最后一页信息',
                         'next_page_url' => '下一页的调用地址，可以直接赋值到button上'
