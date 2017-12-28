@@ -30,6 +30,12 @@ $api->version('v1', function ($api) {
         $api->get('blogs', 'PostController@blogList');
         $api->get('new-blog', 'PostController@newBlogList');
         $api->get('hot-blog', 'PostController@hotBlogList');
+        $api->get('tag-blog/{tag}', 'PostController@tagBlogList');
+
+        // Tag
+        $api->group(['prefix' => 'tags'], function ($api) {
+            $api->get('list', 'TagController@index');
+        });
     });
 
     /**
@@ -50,6 +56,7 @@ $api->version('v1', function ($api) {
             $api->get('blogs', 'PostController@blogList');
             $api->get('new-blog', 'PostController@newBlogList');
             $api->get('hot-blog', 'PostController@hotBlogList');
+            $api->get('tag-blog/{tag}', 'PostController@tagBlogList');
         });
     });
 });

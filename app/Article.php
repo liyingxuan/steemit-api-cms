@@ -14,6 +14,7 @@ class Article extends Model
         'content',
         'content_html',
         'first_img_url',
+        'main_tag',
         'tag',
         'author_id'
     ];
@@ -112,6 +113,27 @@ class Article extends Model
             ->leftJoin('users', 'articles.author_id', '=', 'users.id')
             ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
             ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
+            ->groupBy('articles.id')
+            ->orderBy('articles.id', 'asc')
+            ->paginate(10);
+    }
+
+    /**
+     * 获取某个tag分类下的blog列表
+     *
+     * @param $tagName
+     * @param null $userId
+     * @return mixed
+     */
+    public static function getTagBlogList($tagName, $userId = null)
+    {
+        return Article::select(DB::raw(
+            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
+            'count(article_comments.id) AS commentCount'))
+            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
+            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
+            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
+            ->where('articles.main_tag', $tagName)
             ->groupBy('articles.id')
             ->orderBy('articles.id', 'asc')
             ->paginate(10);

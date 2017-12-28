@@ -10,6 +10,7 @@ namespace App\Api\Controllers;
 use App\Api\Common\RetJson;
 use App\Api\Helper\GetImg;
 use App\Article;
+use App\ArticleTag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -29,12 +30,26 @@ class PostController extends Controller
         $getImg = new GetImg();
         $firstImgUrl = $getImg->extractImgUrl($request->get('contentHtml'));
 
+        // 获取tag
+        $tagList = explode(' ', trim($request->get('tags')));
+        $tagList = array_slice($tagList, 0, 5); // 只保留5个
+
+        // Tag入库，并自动过滤掉已有的
+        foreach ($tagList as $tagItem) {
+            try {
+                ArticleTag::create(array('name' => $tagItem));
+            } catch (\Exception $e) {
+                // 过滤掉错误，不执行任何操作
+            }
+        }
+
         $data = [
             'title' => $request->get('title'),
             'content' => $request->get('content'),
             'content_html' => $request->get('contentHtml'),
             'first_img_url' => $firstImgUrl,
-            'tag' => $request->get('tags'),
+            'main_tag' => $tagList[0],
+            'tag' => json_encode($tagList),
             'author_id' => $user->id
         ];
         $articles = Article::create($data);
@@ -125,6 +140,25 @@ class PostController extends Controller
             $articles = Article::getHotBlogList();
         } else {
             $articles = Article::getHotBlogList($user->id);
+        }
+
+        return RetJson::format($articles);
+    }
+
+    /**
+     * 获得某个tag分类下的
+     *
+     * @param $tagName
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tagBlogList($tagName, Request $request)
+    {
+        $user = $request->user();
+        if (is_null($user)) {
+            $articles = Article::getTagBlogList($tagName);
+        } else {
+            $articles = Article::getTagBlogList($tagName, $user->id);
         }
 
         return RetJson::format($articles);

@@ -133,9 +133,11 @@ class ApiDoc extends BaseController
                 '获取默认的Blog列表url' => $url . '/post/blogs',
                 '获取最新的Blog列表url' => $url . '/post/new-blog',
                 '获取最热的Blog列表url' => $url . '/post/hot-blog',
+                '获取某一个tag下的Blog列表url' => $url . '/post/tag-blog/{tagName}',
                 '获取默认的Blog列表url-未登录' => $url . '/blogs',
                 '获取最新的Blog列表url-未登录' => $url . '/new-blog',
                 '获取最热的Blog列表url-未登录' => $url . '/hot-blog',
+                '获取某一个tag下的Blog列表url-未登录' => $url . '/tag-blog/{tagName}',
                 'method' => 'GET',
                 'params' => [],
                 'response' => [
