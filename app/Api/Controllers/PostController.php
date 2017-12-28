@@ -43,6 +43,25 @@ class PostController extends Controller
     }
 
     /**
+     * 获得某一篇blog
+     *
+     * @param $articleId
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function blog($articleId, Request $request)
+    {
+        $user = $request->user();
+        if (is_null($user)) {
+            $articles = Article::getBlog($articleId);
+        } else {
+            $articles = Article::getBlog($articleId, $user->id);
+        }
+
+        return RetJson::format($articles);
+    }
+
+    /**
      * Get my blog list.
      *
      * @param Request $request
