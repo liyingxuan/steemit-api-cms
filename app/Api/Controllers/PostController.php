@@ -10,6 +10,7 @@ namespace App\Api\Controllers;
 use App\Api\Common\RetJson;
 use App\Api\Helper\GetImg;
 use App\Article;
+use App\ArticleLike;
 use App\ArticleTag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -64,13 +65,21 @@ class PostController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function blog($articleId, Request $request)
+    public function blog(Request $request, $articleId)
     {
         $user = $request->user();
         if (is_null($user)) {
             $articles = Article::getBlog($articleId);
         } else {
             $articles = Article::getBlog($articleId, $user->id);
+
+            // 获取是否喜欢，赋予相应的值
+            $isLike = ArticleLike::where('user_id', $user->id)->where('article_id', $articleId)->get();
+            if (!is_null($isLike)) {
+                foreach ($articles as &$article) {
+                    $article['myStar'] = true;
+                }
+            }
         }
 
         return RetJson::format($articles);
@@ -92,6 +101,25 @@ class PostController extends Controller
     }
 
     /**
+     * 设置用户已经点过赞的数据
+     *
+     * @param $articles
+     * @param $userId
+     */
+    public function setLikes($articles, $userId)
+    {
+        $articlesIdList = $articles->pluck('id');
+        $myLikeArticleId = ArticleLike::where('user_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
+        foreach ($articles as &$article) {
+            if (in_array($article->id, $myLikeArticleId)) {
+                $article['myStar'] = true;
+            } else {
+                $article['myStar'] = false;
+            }
+        }
+    }
+
+    /**
      * 获取常规blog列表
      *
      * @param Request $request
@@ -104,6 +132,7 @@ class PostController extends Controller
             $articles = Article::getBlogList();
         } else {
             $articles = Article::getBlogList($user->id);
+            $this->setLikes($articles, $user->id);
         }
 
         return RetJson::format($articles);
@@ -122,6 +151,7 @@ class PostController extends Controller
             $articles = Article::getNewBlogList();
         } else {
             $articles = Article::getNewBlogList($user->id);
+            $this->setLikes($articles, $user->id);
         }
 
         return RetJson::format($articles);
@@ -140,6 +170,7 @@ class PostController extends Controller
             $articles = Article::getHotBlogList();
         } else {
             $articles = Article::getHotBlogList($user->id);
+            $this->setLikes($articles, $user->id);
         }
 
         return RetJson::format($articles);
@@ -159,6 +190,7 @@ class PostController extends Controller
             $articles = Article::getTagBlogList($tagName);
         } else {
             $articles = Article::getTagBlogList($tagName, $user->id);
+            $this->setLikes($articles, $user->id);
         }
 
         return RetJson::format($articles);

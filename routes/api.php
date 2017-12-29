@@ -58,5 +58,7 @@ $api->version('v1', function ($api) {
             $api->get('hot-blog', 'PostController@hotBlogList');
             $api->get('tag-blog/{tag}', 'PostController@tagBlogList');
         });
+
+        $api->post('like', 'LikeController@index');
     });
 });
