@@ -36,6 +36,11 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'tags'], function ($api) {
             $api->get('list', 'TagController@index');
         });
+
+        // Comment
+        $api->group(['prefix' => 'comment'], function ($api) {
+            $api->get('index/{id}', 'CommentController@index');
+        });
     });
 
     /**
@@ -60,5 +65,10 @@ $api->version('v1', function ($api) {
         });
 
         $api->post('like', 'LikeController@index');
+
+        // Comment
+        $api->group(['prefix' => 'comment'], function ($api) {
+            $api->post('create', 'CommentController@create');
+        });
     });
 });
