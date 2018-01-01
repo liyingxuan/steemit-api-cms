@@ -19,6 +19,11 @@ class Article extends Model
         'author_id'
     ];
 
+    /**
+     * 查询blog列表的基础查询语句
+     *
+     * @return string
+     */
     public static function sqlBase()
     {
         return "

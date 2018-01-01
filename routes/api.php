@@ -69,6 +69,7 @@ $api->version('v1', function ($api) {
         // Comment
         $api->group(['prefix' => 'comment'], function ($api) {
             $api->post('create', 'CommentController@create');
+            $api->get('my-comments', 'CommentController@myComments');
         });
     });
 });

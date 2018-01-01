@@ -30,4 +30,21 @@ class ArticleComment extends Model
             ->orderBy('article_comments.created_at', 'desc')
             ->paginate(10);
     }
+
+    /**
+     * Get my comments.
+     *
+     * @param $userId
+     * @return mixed
+     */
+    public static function getMyComments($userId)
+    {
+        return ArticleComment::select(DB::raw(
+            'article_comments.*, users.name AS author, articles.title'))
+            ->leftJoin('users', 'article_comments.author_id', '=', 'users.id')
+            ->leftJoin('articles', 'article_comments.article_id', '=', 'articles.id')
+            ->where('article_comments.author_id', $userId)
+            ->orderBy('article_comments.created_at', 'desc')
+            ->paginate(10);
+    }
 }

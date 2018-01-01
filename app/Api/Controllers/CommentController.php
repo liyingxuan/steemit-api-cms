@@ -40,4 +40,19 @@ class CommentController extends Controller
 
         return RetJson::format($retData);
     }
+
+    /**
+     * 获取我的评论列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function myComments(Request $request)
+    {
+        $user = $request->user();
+
+        $articles = ArticleComment::getMyComments($user->id);
+
+        return RetJson::format($articles);
+    }
 }
