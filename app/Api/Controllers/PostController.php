@@ -10,6 +10,7 @@ namespace App\Api\Controllers;
 use App\Api\Common\RetJson;
 use App\Api\Helper\GetImg;
 use App\Article;
+use App\ArticleComment;
 use App\ArticleLike;
 use App\ArticleTag;
 use App\Http\Controllers\Controller;
@@ -69,15 +70,22 @@ class PostController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            $articles = Article::getBlog($articleId);
+            $articles = Article::getBlog($articleId, $request->get('page'));
         } else {
-            $articles = Article::getBlog($articleId, $user->id);
+            $articles = Article::getBlog($articleId, $request->get('page'));
 
             // 获取是否喜欢，赋予相应的值
             $isLike = ArticleLike::where('user_id', $user->id)->where('article_id', $articleId)->get();
             if (!is_null($isLike)) {
                 foreach ($articles as &$article) {
-                    $article['myStar'] = true;
+                    $article->myStar = true;
+                }
+            }
+            // 获取是否评论，赋予相应的值
+            $isComment = ArticleComment::where('author_id', $user->id)->where('article_id', $articleId)->get();
+            if (!is_null($isComment)) {
+                foreach ($articles as &$article) {
+                    $article->myComment = true;
                 }
             }
         }
@@ -95,9 +103,9 @@ class PostController extends Controller
     {
         $user = $request->user();
 
-        $articles = Article::getMyBlog($user->id);
+        $articles = Article::getMyBlog($user->id, $request->get('page'));
 
-        return RetJson::format($articles);
+        return RetJson::formatDbSelect($articles, $request);
     }
 
     /**
@@ -106,15 +114,27 @@ class PostController extends Controller
      * @param $articles
      * @param $userId
      */
-    public function setLikes($articles, $userId)
+    public function setLikesAndComments($articles, $userId)
     {
-        $articlesIdList = $articles->pluck('id');
+        // 获取id list
+        $articlesIdList = array_pluck($articles, 'id');
+
+        // 查询登录用户like和comment列表
         $myLikeArticleId = ArticleLike::where('user_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
+        $myCommentArticleId = ArticleComment::where('author_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
+
+        // 重新给返回数据赋值
         foreach ($articles as &$article) {
             if (in_array($article->id, $myLikeArticleId)) {
-                $article['myStar'] = true;
+                $article->myStar = true;
             } else {
-                $article['myStar'] = false;
+                $article->myStar = false;
+            }
+
+            if (in_array($article->id, $myCommentArticleId)) {
+                $article->myComment = true;
+            } else {
+                $article->myComment = false;
             }
         }
     }
@@ -129,13 +149,13 @@ class PostController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            $articles = Article::getBlogList();
+            $articles = Article::getBlogList($request->get('page'));
         } else {
-            $articles = Article::getBlogList($user->id);
-            $this->setLikes($articles, $user->id);
+            $articles = Article::getBlogList($request->get('page'), $user->id);
+            $this->setLikesAndComments($articles, $user->id);
         }
 
-        return RetJson::format($articles);
+        return RetJson::formatDbSelect($articles, $request);
     }
 
     /**
@@ -148,13 +168,13 @@ class PostController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            $articles = Article::getNewBlogList();
+            $articles = Article::getNewBlogList($request->get('page'));
         } else {
-            $articles = Article::getNewBlogList($user->id);
-            $this->setLikes($articles, $user->id);
+            $articles = Article::getNewBlogList($request->get('page'), $user->id);
+            $this->setLikesAndComments($articles, $user->id);
         }
 
-        return RetJson::format($articles);
+        return RetJson::formatDbSelect($articles, $request);
     }
 
     /**
@@ -167,13 +187,13 @@ class PostController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            $articles = Article::getHotBlogList();
+            $articles = Article::getHotBlogList($request->get('page'));
         } else {
-            $articles = Article::getHotBlogList($user->id);
-            $this->setLikes($articles, $user->id);
+            $articles = Article::getHotBlogList($request->get('page'), $user->id);
+            $this->setLikesAndComments($articles, $user->id);
         }
 
-        return RetJson::format($articles);
+        return RetJson::formatDbSelect($articles, $request);
     }
 
     /**
@@ -187,12 +207,12 @@ class PostController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            $articles = Article::getTagBlogList($tagName);
+            $articles = Article::getTagBlogList($tagName, $request->get('page'));
         } else {
-            $articles = Article::getTagBlogList($tagName, $user->id);
-            $this->setLikes($articles, $user->id);
+            $articles = Article::getTagBlogList($tagName, $request->get('page'), $user->id);
+            $this->setLikesAndComments($articles, $user->id);
         }
 
-        return RetJson::format($articles);
+        return RetJson::formatDbSelect($articles, $request);
     }
 }

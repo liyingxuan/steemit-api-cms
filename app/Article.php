@@ -19,25 +19,35 @@ class Article extends Model
         'author_id'
     ];
 
+    public static function sqlBase()
+    {
+        return "
+            SELECT articles.*, IFNULL(t_likes.starCount,0) AS starCount, IFNULL(t_comment.commentCount,0) AS commentCount
+            FROM articles
+            LEFT JOIN (
+                SELECT article_id, count(article_id) AS starCount
+                FROM article_likes GROUP BY article_id
+            ) t_likes
+            ON articles.id = t_likes.article_id
+            LEFT JOIN (
+                SELECT article_id, count(article_id) AS commentCount
+                FROM article_comments GROUP BY article_id
+            ) t_comment
+            ON articles.id = t_comment.article_id ";
+    }
+
     /**
      * 获取单个的blog列表。
      * 包括点赞和评论计数，还有作者姓名。
      *
      * @param $articleId
-     * @param $userId
      * @return mixed
      */
-    public static function getBlog($articleId, $userId = null)
+    public static function getBlog($articleId)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->where('articles.id', $articleId)
-            ->groupBy('articles.id')
-            ->get();
+        $sql = self::sqlBase() . "WHERE articles.id = '$articleId';";
+
+        return DB::select(str_replace(PHP_EOL, '', $sql));
     }
 
     /**
@@ -45,97 +55,105 @@ class Article extends Model
      * 包括点赞和评论计数，还有作者姓名。
      *
      * @param $userId
+     * @param $page
      * @return mixed
      */
-    public static function getMyBlog($userId)
+    public static function getMyBlog($userId, $page)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->where('articles.author_id', $userId)
-            ->groupBy('articles.id')
-            ->orderBy('articles.id', 'desc')
-            ->paginate(10);
+        if (is_null($page)) {
+            $limit = 'limit 10 offset 0;';
+        } else {
+            $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
+        }
+
+        $sql = self::sqlBase() . "WHERE articles.author_id = '$userId' ORDER BY articles.id DESC ";
+        $sql .= $limit;
+
+        return DB::select(str_replace(PHP_EOL, '', $sql));
     }
 
     /**
      * 获取标准blog列表
      *
+     * @param $page
      * @param null $userId
      * @return mixed
      */
-    public static function getBlogList($userId = null)
+    public static function getBlogList($page, $userId = null)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->groupBy('articles.id')
-            ->orderBy('articles.id', 'desc')
-            ->paginate(10);
+        if (is_null($page)) {
+            $limit = 'limit 10 offset 0;';
+        } else {
+            $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
+        }
+
+        $sql = self::sqlBase() . "ORDER BY articles.id DESC ";
+        $sql .= $limit;
+
+        return DB::select($sql);
     }
 
     /**
      * 获取最新的blog列表
      *
+     * @param $page
      * @param null $userId
      * @return mixed
      */
-    public static function getNewBlogList($userId = null)
+    public static function getNewBlogList($page, $userId = null)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->groupBy('articles.id')
-            ->orderBy('articles.id', 'desc')
-            ->paginate(10);
+        if (is_null($page)) {
+            $limit = 'limit 10 offset 0;';
+        } else {
+            $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
+        }
+
+        $sql = self::sqlBase() . "ORDER BY articles.id DESC ";
+        $sql .= $limit;
+
+        return DB::select($sql);
     }
 
     /**
      * 获取最热的blog列表
      *
+     * @param $page
      * @param null $userId
      * @return mixed
      */
-    public static function getHotBlogList($userId = null)
+    public static function getHotBlogList($page, $userId = null)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->groupBy('articles.id')
-            ->orderBy('articles.id', 'asc')
-            ->paginate(10);
+        if (is_null($page)) {
+            $limit = 'limit 10 offset 0;';
+        } else {
+            $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
+        }
+
+        $sql = self::sqlBase() . "ORDER BY articles.id ASC ";
+        $sql .= $limit;
+
+        return DB::select($sql);
     }
 
     /**
      * 获取某个tag分类下的blog列表
      *
      * @param $tagName
+     * @param $page
      * @param null $userId
      * @return mixed
      */
-    public static function getTagBlogList($tagName, $userId = null)
+    public static function getTagBlogList($tagName, $page, $userId = null)
     {
-        return Article::select(DB::raw(
-            'articles.*, users.name AS author, count(article_likes.id) AS starCount, ' .
-            'count(article_comments.id) AS commentCount'))
-            ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->leftJoin('article_likes', 'articles.id', '=', 'article_likes.article_id')
-            ->leftJoin('article_comments', 'articles.id', '=', 'article_comments.article_id')
-            ->where('articles.main_tag', $tagName)
-            ->groupBy('articles.id')
-            ->orderBy('articles.id', 'asc')
-            ->paginate(10);
+        if (is_null($page)) {
+            $limit = 'limit 10 offset 0;';
+        } else {
+            $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
+        }
+
+        $sql = self::sqlBase() . "WHERE articles.main_tag = '$tagName' ORDER BY articles.id DESC ";
+        $sql .= $limit;
+
+        return DB::select(str_replace(PHP_EOL, '', $sql));
     }
 }
