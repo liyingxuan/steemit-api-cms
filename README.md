@@ -25,7 +25,7 @@ $ composer install
 $ npm install
 
 $ cp .env.example .env
-$ php artisna key:generate 
+$ php artisan key:generate 
 # 将生成的key保存到.env中
 
 $ php artisan passport:install
