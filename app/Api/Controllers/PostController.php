@@ -75,18 +75,18 @@ class PostController extends Controller
             $articles = Article::getBlog($articleId, $request->get('page'));
 
             // 获取是否喜欢，赋予相应的值
-            $isLike = ArticleLike::where('user_id', $user->id)->where('article_id', $articleId)->get();
-            if (!is_null($isLike)) {
-                foreach ($articles as &$article) {
-                    $article->myStar = true;
-                }
+            $isLike = ArticleLike::where('user_id', $user->id)->where('article_id', $articleId)->first();
+            if (is_null($isLike)) {
+                $articles[0]->myStar = false;
+            } else {
+                $articles[0]->myStar = true;
             }
             // 获取是否评论，赋予相应的值
-            $isComment = ArticleComment::where('author_id', $user->id)->where('article_id', $articleId)->get();
-            if (!is_null($isComment)) {
-                foreach ($articles as &$article) {
-                    $article->myComment = true;
-                }
+            $isComment = ArticleComment::where('author_id', $user->id)->where('article_id', $articleId)->first();
+            if (is_null($isComment)) {
+                $articles[0]->myComment = false;
+            } else {
+                $articles[0]->myComment = true;
             }
         }
 
