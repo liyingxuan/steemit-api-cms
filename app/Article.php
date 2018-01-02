@@ -27,8 +27,9 @@ class Article extends Model
     public static function sqlBase()
     {
         return "
-            SELECT articles.*, IFNULL(t_likes.starCount,0) AS starCount, IFNULL(t_comment.commentCount,0) AS commentCount
-            FROM articles
+            SELECT articles.*, users.name AS author, IFNULL(t_likes.starCount,0) AS starCount, IFNULL(t_comment.commentCount,0) AS commentCount
+            FROM articles 
+            LEFT JOIN users ON articles.author_id = users.id 
             LEFT JOIN (
                 SELECT article_id, count(article_id) AS starCount
                 FROM article_likes GROUP BY article_id
@@ -95,7 +96,7 @@ class Article extends Model
         $sql = self::sqlBase() . "ORDER BY articles.id DESC ";
         $sql .= $limit;
 
-        return DB::select($sql);
+        return DB::select(str_replace(PHP_EOL, '', $sql));
     }
 
     /**
