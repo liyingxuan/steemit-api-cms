@@ -8,6 +8,7 @@
 namespace App\Api\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -26,5 +27,43 @@ class UserController extends Controller
         $user = $request->user();
 
         return response()->json(compact('user'));
+    }
+
+    /**
+     * 查询姓名是否已存在
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function verifyName(Request $request)
+    {
+        $name = User::where('name', $request->get('name'))->first();
+        if (is_null($name)) {
+            $data = true;
+        } else {
+            $data = false;
+        }
+
+        return response()->json(compact('data'));
+    }
+
+    /**
+     * 获取私钥验证密码
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyPassword(Request $request)
+    {
+        $user = $request->user();
+        $info = User::where('name', $user->name)->first();
+        if (is_null($info)) {
+            $old_password = '';
+        } else {
+            $old_password = $info->password;
+        }
+        $data = \Hash::check($request->get('password'), $old_password);
+
+        return response()->json(compact('data'));
     }
 }

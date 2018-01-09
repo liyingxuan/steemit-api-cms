@@ -60,6 +60,17 @@ class PostController extends Controller
     }
 
     /**
+     * 插入链上返回的txid
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function insertTxid(Request $request)
+    {
+        return RetJson::format(Article::where('id', $request->get('id'))->update(['txid' => $request->get('txid')]));
+    }
+
+    /**
      * 获得某一篇blog
      *
      * @param $articleId

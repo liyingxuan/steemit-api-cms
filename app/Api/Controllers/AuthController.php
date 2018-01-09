@@ -62,4 +62,14 @@ class AuthController extends BaseController
             'password' => bcrypt($data['password'])
         ]);
     }
+
+    /**
+     * 更新用户注册状态为活跃
+     *
+     * @param Request $request
+     */
+    public function updateStatus(Request $request)
+    {
+        User::where('name', $request->get('name'))->update(['is_active' => 1]);
+    }
 }

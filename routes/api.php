@@ -21,7 +21,10 @@ $api->version('v1', function ($api) {
         $api->get('intelligence', 'IntelligenceController@index');
         $api->get('help-doc', 'HelpDocController@index');
 
+        $api->post('verify-name', 'UserController@verifyName');
         $api->post('register', 'AuthController@register');
+        $api->post('update/status', 'AuthController@updateStatus');
+
         $api->post('login', 'LoginController@login');
         $api->post('token/refresh', 'LoginController@refresh');
         $api->post('logout', 'LoginController@logout');
@@ -50,11 +53,13 @@ $api->version('v1', function ($api) {
         // User
         $api->group(['prefix' => 'user'], function ($api) {
             $api->get('profile', 'UserController@getAuthenticatedUser');
+            $api->post('password', 'UserController@verifyPassword');
         });
 
         // Post
         $api->group(['prefix' => 'post'], function ($api) {
             $api->post('create', 'PostController@create');
+            $api->post('txid', 'PostController@insertTxid');
             $api->get('my-blog', 'PostController@myBlog');
 
             $api->get('blog/{id}', 'PostController@blog');
