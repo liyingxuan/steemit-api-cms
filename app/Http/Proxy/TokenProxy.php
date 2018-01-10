@@ -20,9 +20,7 @@ class TokenProxy
      */
     public function __construct(\GuzzleHttp\Client $http)
     {
-        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => true]]);
-
-        $this->http = $client;
+        $this->http = $http;
     }
 
     /**
