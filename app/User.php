@@ -27,4 +27,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * 提供用户名登录方式
+     *
+     * @param $username
+     * @return mixed
+     */
+    public static function findEmail($username)
+    {
+        return User::where('is_active', 1)->orWhere('name', $username)->orWhere('email', $username)->first();
+    }
 }

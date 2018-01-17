@@ -10,6 +10,8 @@
  */
 namespace App\Http\Proxy;
 
+use App\User;
+
 class TokenProxy
 {
     protected $http;
@@ -32,9 +34,11 @@ class TokenProxy
      */
     public function login($name, $password)
     {
-        if (auth()->attempt(['email' => $name, 'password' => $password, 'is_active' => 1])) {
+        $user = User::findEmail($name);
+
+        if (auth()->attempt(['email' => $user->email, 'password' => $password, 'is_active' => 1])) {
             return $this->proxy('password', [
-                'username' => $name,
+                'username' => $user->email,
                 'password' => $password,
                 'scope' => ''
             ]);
