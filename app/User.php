@@ -36,6 +36,6 @@ class User extends Authenticatable
      */
     public static function findEmail($username)
     {
-        return User::where('is_active', 1)->orWhere('name', $username)->orWhere('email', $username)->first();
+        return User::orwhere('name', $username)->orWhere('email', $username)->where('is_active', 1)->first();
     }
 }
