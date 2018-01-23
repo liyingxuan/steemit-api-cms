@@ -19,6 +19,7 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
     $api->group(['namespace' => 'App\Api\Controllers'], function ($api) {
         $api->post('subscribe', 'EmailController@insert');
+        $api->get('email-test', 'EmailController@email');
 
         $api->get('intelligence', 'IntelligenceController@index');
         $api->get('help-doc', 'HelpDocController@index');
