@@ -39,18 +39,17 @@ class EmailController extends Controller
 //            $to = 'mvp_xuan@163.com';
 //            $message->to($to)->subject('邮件测试');
 //        });
+        $params = [
+            'email' => 'test@test.com',
+            'message' => 'test message'
+        ];
 
-        Mail::send(
-            'emails.subscribe',
-            [
-                'email' => 'test@test.com',
-                'message' => 'test message'
-            ],
-            function ($message) {
-                $to = 'mvp_xuan@163.com';
-                $message->to($to)->subject('NKN user subscribe');
-            });
+        Mail::send('emails.subscribe', ['content' => $params], function ($message) {
+            $to = 'mvp_xuan@163.com';
+            $message->to($to)->subject('NKN user subscribe');
+        });
 
         dd(Mail::failures());
     }
 }
+
