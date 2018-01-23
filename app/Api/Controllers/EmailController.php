@@ -35,10 +35,21 @@ class EmailController extends Controller
      */
     public function email()
     {
-        Mail::send('emails.test', ['name' => 'TestName'], function ($message) {
-            $to = 'mvp_xuan@163.com';
-            $message->to($to)->subject('邮件测试');
-        });
+//        Mail::send('emails.test', ['name' => 'TestName'], function ($message) {
+//            $to = 'mvp_xuan@163.com';
+//            $message->to($to)->subject('邮件测试');
+//        });
+
+        Mail::send(
+            'emails.subscribe',
+            [
+                'email' => 'test@test.com',
+                'message' => 'test message'
+            ],
+            function ($message) {
+                $to = 'mvp_xuan@163.com';
+                $message->to($to)->subject('NKN user subscribe');
+            });
 
         dd(Mail::failures());
     }
