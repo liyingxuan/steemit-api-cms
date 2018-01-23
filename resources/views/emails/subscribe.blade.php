@@ -1,5 +1,5 @@
-Email Address: {{$email}}
+Email Address: {{$content->email}}
 <br>
 
-Message: {{$message}}
+Message: {{$content->message}}
 <br>
