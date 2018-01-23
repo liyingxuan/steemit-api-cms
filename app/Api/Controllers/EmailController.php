@@ -16,16 +16,15 @@ class EmailController extends Controller
 {
     public function insert(Request $request)
     {
-        Mail::send(
-            'emails.subscribe',
-            [
-                'email' => $request->get('email'),
-                'message' => $request->get('content')
-            ],
-            function ($message) {
-                $to = 'contact@nkn.org';
-                $message->to($to)->subject('NKN user subscribe');
-            });
+        $params = [
+            'email' => $request->get('email'),
+            'message' => $request->get('content')
+        ];
+
+        Mail::send('emails.subscribe', ['content' => $params], function ($message) {
+            $to = 'contact@nkn.org';
+            $message->to($to)->subject('NKN user subscribe');
+        });
 
         return SubscribeEmail::create($request->all());
     }
@@ -35,10 +34,6 @@ class EmailController extends Controller
      */
     public function email()
     {
-//        Mail::send('emails.test', ['name' => 'TestName'], function ($message) {
-//            $to = 'mvp_xuan@163.com';
-//            $message->to($to)->subject('邮件测试');
-//        });
         $params = [
             'email' => 'test@test.com',
             'message' => 'test message'
@@ -46,10 +41,9 @@ class EmailController extends Controller
 
         Mail::send('emails.subscribe', ['content' => $params], function ($message) {
             $to = 'mvp_xuan@163.com';
-            $message->to($to)->subject('NKN user subscribe');
+            $message->to($to)->subject('测试邮件');
         });
 
         dd(Mail::failures());
     }
 }
-
