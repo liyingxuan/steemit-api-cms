@@ -6,4 +6,5 @@
  * Time: 16:00
  */
 
-Test email
+{{$name}}，这是一封测试邮件
+<br>
