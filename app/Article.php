@@ -79,6 +79,18 @@ class Article extends Model
     }
 
     /**
+     * 获取置顶blog列表
+     *
+     * @return mixed
+     */
+    public static function getTopBlog()
+    {
+        $sql = self::sqlBase() . 'WHERE articles.is_top = 1;';
+
+        return DB::select(str_replace(PHP_EOL, '', $sql));
+    }
+
+    /**
      * 获取标准blog列表
      *
      * @param $page
@@ -93,7 +105,7 @@ class Article extends Model
             $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
         }
 
-        $sql = self::sqlBase() . "ORDER BY articles.id DESC ";
+        $sql = self::sqlBase() . "WHERE articles.is_top = 0 ORDER BY articles.id DESC ";
         $sql .= $limit;
 
         return DB::select(str_replace(PHP_EOL, '', $sql));

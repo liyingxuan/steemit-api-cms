@@ -166,6 +166,13 @@ class PostController extends Controller
             $this->setLikesAndComments($articles, $user->id);
         }
 
+        if (is_null($request->get('page')) || $request->get('page') == 1) {
+            $articleTop = Article::getTopBlog();
+            if (count($articleTop) !== 0) {
+                $articles = array_merge($articleTop, $articles);
+            }
+        }
+
         return RetJson::formatDbSelect($articles, $request);
     }
 
