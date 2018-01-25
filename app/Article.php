@@ -27,7 +27,10 @@ class Article extends Model
     public static function sqlBase()
     {
         return "
-            SELECT articles.*, users.name AS author, IFNULL(t_likes.starCount,0) AS starCount, IFNULL(t_comment.commentCount,0) AS commentCount
+            SELECT articles.*, users.name AS author, 
+              IFNULL(t_likes.starCount,0) AS starCount, 
+              IFNULL(t_hates.hateCount,0) AS hateCount, 
+              IFNULL(t_comment.commentCount,0) AS commentCount
             FROM articles 
             LEFT JOIN users ON articles.author_id = users.id 
             LEFT JOIN (
@@ -35,6 +38,11 @@ class Article extends Model
                 FROM article_likes GROUP BY article_id
             ) t_likes
             ON articles.id = t_likes.article_id
+            LEFT JOIN (
+                SELECT article_id, count(article_id) AS hateCount
+                FROM article_hates GROUP BY article_id
+            ) t_hates
+            ON articles.id = t_hates.article_id
             LEFT JOIN (
                 SELECT article_id, count(article_id) AS commentCount
                 FROM article_comments GROUP BY article_id

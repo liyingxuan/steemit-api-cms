@@ -73,6 +73,7 @@ $api->version('v1', function ($api) {
         });
 
         $api->post('like', 'LikeController@index');
+        $api->post('hate', 'HateController@index');
 
         // Comment
         $api->group(['prefix' => 'comment'], function ($api) {

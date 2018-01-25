@@ -11,6 +11,7 @@ use App\Api\Common\RetJson;
 use App\Api\Helper\GetImg;
 use App\Article;
 use App\ArticleComment;
+use App\ArticleHate;
 use App\ArticleLike;
 use App\ArticleTag;
 use App\Http\Controllers\Controller;
@@ -124,7 +125,7 @@ class PostController extends Controller
     }
 
     /**
-     * 设置用户已经点过赞的数据
+     * 设置用户已经点过赞/拍过砖的数据
      *
      * @param $articles
      * @param $userId
@@ -136,6 +137,7 @@ class PostController extends Controller
 
         // 查询登录用户like和comment列表
         $myLikeArticleId = ArticleLike::where('user_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
+        $myHateArticleId = ArticleHate::where('user_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
         $myCommentArticleId = ArticleComment::where('author_id', $userId)->whereIn('article_id', $articlesIdList)->get()->pluck('article_id')->toArray();
 
         // 重新给返回数据赋值
@@ -144,6 +146,12 @@ class PostController extends Controller
                 $article->myStar = true;
             } else {
                 $article->myStar = false;
+            }
+
+            if (in_array($article->id, $myHateArticleId)) {
+                $article->myHate = true;
+            } else {
+                $article->myHate = false;
             }
 
             if (in_array($article->id, $myCommentArticleId)) {
