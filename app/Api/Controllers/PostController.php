@@ -34,15 +34,19 @@ class PostController extends Controller
 
         // 获取tag
         $tagList = explode(' ', trim($request->get('tags')));
-        $tagList = array_slice($tagList, 0, 5); // 只保留5个
+        if ($tagList !== '') {
+            $tagList = array_slice($tagList, 0, 5); // 只保留5个
 
-        // Tag入库，并自动过滤掉已有的
-        foreach ($tagList as $tagItem) {
-            try {
-                ArticleTag::create(array('name' => $tagItem));
-            } catch (\Exception $e) {
-                // 过滤掉错误，不执行任何操作
+            // Tag入库，并自动过滤掉已有的
+            foreach ($tagList as $tagItem) {
+                try {
+                    ArticleTag::create(array('name' => $tagItem));
+                } catch (\Exception $e) {
+                    // 过滤掉错误，不执行任何操作
+                }
             }
+        } else {
+            $tagList = '';
         }
 
         $data = [
