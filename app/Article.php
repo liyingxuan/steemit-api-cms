@@ -155,7 +155,7 @@ class Article extends Model
             $limit = 'limit ' . ($page * 10) . ' offset ' . ($page * 10 - 10) . ';';
         }
 
-        $sql = self::sqlBase() . "ORDER BY articles.id ASC ";
+        $sql = self::sqlBase() . "ORDER BY starCount DESC ";
         $sql .= $limit;
 
         return DB::select($sql);
