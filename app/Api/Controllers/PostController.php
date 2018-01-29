@@ -97,6 +97,13 @@ class PostController extends Controller
             } else {
                 $articles[0]->myStar = true;
             }
+            // 获取是否讨厌，赋予相应的值
+            $isHate = ArticleHate::where('user_id', $user->id)->where('article_id', $articleId)->first();
+            if (is_null($isHate)) {
+                $articles[0]->myHate = false;
+            } else {
+                $articles[0]->myHate = true;
+            }
             // 获取是否评论，赋予相应的值
             $isComment = ArticleComment::where('author_id', $user->id)->where('article_id', $articleId)->first();
             if (is_null($isComment)) {
