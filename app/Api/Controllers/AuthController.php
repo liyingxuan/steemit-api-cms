@@ -59,7 +59,7 @@ class AuthController extends BaseController
 
             // 给用户发认证邮件
             $params = [
-                'link' => url('verification', $user->verification_token) . '?email=' . urlencode($user->email),
+                'link' => url('api/v1/verification', $user->verification_token) . '?email=' . urlencode($user->email),
                 'linkName' => 'Click Here'
             ];
             $to = $user->email;

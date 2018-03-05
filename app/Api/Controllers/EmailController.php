@@ -36,7 +36,7 @@ class EmailController extends Controller
     public function email()
     {
         $params = [
-            'link' => url('verification', 'test') . '?email=' . urlencode('44600937@qq.com'),
+            'link' => url('api/v1/verification', 'test') . '?email=' . urlencode('44600937@qq.com'),
             'linkName' => 'Click Here'
         ];
 
