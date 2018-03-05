@@ -26,6 +26,7 @@ $api->version('v1', function ($api) {
 
         $api->post('verify-name', 'UserController@verifyName');
         $api->post('register', 'AuthController@register');
+        $api->get('verification/{token}', 'AuthController@getVerification');
         $api->post('update/status', 'AuthController@updateStatus');
 
         $api->post('login', 'LoginController@login');

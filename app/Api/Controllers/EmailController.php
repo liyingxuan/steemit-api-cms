@@ -21,9 +21,10 @@ class EmailController extends Controller
             'message' => $request->get('content')
         ];
 
-        Mail::send('emails.subscribe', ['content' => $params], function ($message) {
-            $to = 'contact@nkn.org';
-            $message->to($to)->subject('NKN user subscribe');
+        $to = 'contact@nkn.org';
+        $subject = 'User subscribe';
+        Mail::send('emails.subscribe', ['content' => $params], function ($message) use ($to, $subject) {
+            $message->to($to)->subject($subject);
         });
 
         return SubscribeEmail::create($request->all());
@@ -35,13 +36,14 @@ class EmailController extends Controller
     public function email()
     {
         $params = [
-            'email' => 'test@test.com',
-            'message' => 'test message'
+            'verification_token' => 'test',
+            '$content' => '44600937@qq.com'
         ];
 
-        Mail::send('emails.subscribe', ['content' => $params], function ($message) {
-            $to = 'mvp_xuan@163.com';
-            $message->to($to)->subject('测试邮件');
+        $to = '44600937@qq.com';
+        $subject = 'Welcome to FORTUNE TREE! Confirm Your Email';
+        Mail::send('emails.user-verification', ['content' => $params], function ($message) use ($to, $subject) {
+            $message->to($to)->subject($subject);
         });
 
         dd(Mail::failures());

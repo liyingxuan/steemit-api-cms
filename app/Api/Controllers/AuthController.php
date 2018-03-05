@@ -13,9 +13,21 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Api\Common\RetJson;
+use Jrean\UserVerification\Traits\VerifiesUsers;
+use Jrean\UserVerification\Facades\UserVerification;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends BaseController
 {
+    use VerifiesUsers;
+
+    // 验证失败后的跳转地址
+    public $redirectIfVerificationFails = '/emails/verification-result/failure';
+    // 检测到用户已经验证过后的跳转地址
+    public $redirectIfVerified = '/emails/verification-result/success';
+    // 验证成功后的跳转地址
+    public $redirectAfterVerification = '/emails/verification-result/success';
+
     /**
      * @param array $data
      * @return mixed
@@ -42,7 +54,21 @@ class AuthController extends BaseController
         try {
             event(new Registered($user = $this->create($request->all())));
 
-            return RetJson::format([]);
+            // 生成用户的验证 token，并将用户的 verified 设置为 0
+            UserVerification::generate($user);
+
+            // 给用户发认证邮件
+            $to = $user->email;
+            $subject = 'Welcome to FORTUNE TREE! Confirm Your Email';
+            Mail::send(
+                'emails.user-verification',
+                ['content' => $user],
+                function ($message) use ($to, $subject) {
+                    $message->to($to)->subject($subject);
+                }
+            );
+
+            return RetJson::format($user);
         } catch (\Exception $e) {
             return response()->json($e->getMessage());
         }
