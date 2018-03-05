@@ -36,8 +36,8 @@ class EmailController extends Controller
     public function email()
     {
         $params = [
-            'verification_token' => 'test',
-            '$content' => '44600937@qq.com'
+            'link' => url('verification', 'test') . '?email=' . urlencode('44600937@qq.com'),
+            'linkName' => 'Click Here'
         ];
 
         $to = '44600937@qq.com';

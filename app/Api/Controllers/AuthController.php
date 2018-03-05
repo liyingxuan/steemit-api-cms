@@ -58,11 +58,15 @@ class AuthController extends BaseController
             UserVerification::generate($user);
 
             // 给用户发认证邮件
+            $params = [
+                'link' => url('verification', $user->verification_token) . '?email=' . urlencode($user->email),
+                'linkName' => 'Click Here'
+            ];
             $to = $user->email;
             $subject = 'Welcome to FORTUNE TREE! Confirm Your Email';
             Mail::send(
                 'emails.user-verification',
-                ['content' => $user],
+                ['content' => $params],
                 function ($message) use ($to, $subject) {
                     $message->to($to)->subject($subject);
                 }
