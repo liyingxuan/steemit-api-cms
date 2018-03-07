@@ -36,7 +36,7 @@ class TokenProxy
     {
         $user = User::findEmail($name);
 
-        if (auth()->attempt(['email' => $user->email, 'password' => $password, 'is_active' => 1])) {
+        if (auth()->attempt(['email' => $user->email, 'password' => $password, 'is_active' => 1, 'verified' => 1])) {
             return $this->proxy('password', [
                 'username' => $user->email,
                 'password' => $password,
