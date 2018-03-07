@@ -24,9 +24,9 @@ class AuthController extends BaseController
     // 验证失败后的跳转地址
     public $redirectIfVerificationFails = '/emails/verification-result/failure';
     // 检测到用户已经验证过后的跳转地址
-    public $redirectIfVerified = '/emails/verification-result/success';
+    public $redirectIfVerified = 'https://forum.nkn.org/#/login';
     // 验证成功后的跳转地址
-    public $redirectAfterVerification = '/emails/verification-result/success';
+    public $redirectAfterVerification = 'https://forum.nkn.org/#/login';
 
     /**
      * @param array $data
