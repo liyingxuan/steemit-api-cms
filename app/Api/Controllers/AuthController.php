@@ -24,9 +24,14 @@ class AuthController extends BaseController
     // 验证失败后的跳转地址
     public $redirectIfVerificationFails = '/emails/verification-result/failure';
     // 检测到用户已经验证过后的跳转地址
-    public $redirectIfVerified = 'https://forum.nkn.org/#/login';
+    public $redirectIfVerified = '/emails/verification-result/success';
     // 验证成功后的跳转地址
-    public $redirectAfterVerification = 'https://forum.nkn.org/#/login';
+    public $redirectAfterVerification = '/emails/verification-result/success';
+
+    public function __construct() {
+        $this->redirectIfVerified = env('MAIL_REDIRECT_IF_VERIFIED', '/emails/verification-result/success');
+        $this->redirectAfterVerification = env('MAIL_REDIRECT_AFTER_VERIFICATION', '/emails/verification-result/success');
+    }
 
     /**
      * @param array $data
